@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException {
-        StudentC studentC = new StudentC();
+        StudentWithoutCriticalData studentC = new StudentWithoutCriticalData();
         Date date1=new SimpleDateFormat("dd/MM/yyyy"). parse("02/06/1998");
         studentC.setDateOfBirth(date1);
         studentC.setName("S1");
@@ -17,7 +17,7 @@ public class Main {
         StudentMarshallingDeMarshalling studentMarshallingDeMarshalling = new StudentMarshallingDeMarshalling();
         studentMarshallingDeMarshalling.writeToFile(studentC,"studentFile.txt");
 
-        StudentC updateObj= studentMarshallingDeMarshalling.readToFile("studentFile.txt");
+       StudentWithoutCriticalData updateObj= studentMarshallingDeMarshalling.readToFile("studentFile.txt");
         System.out.println(updateObj.getDateOfBirth());
     }
 
