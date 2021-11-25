@@ -6,44 +6,33 @@ import java.util.concurrent.*;
 
 public class NewMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         // creates five tasks
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-        FutureTask[] randomNumberTasks = new FutureTask[5];
+        FutureTask[] fileParserFutureTask = new FutureTask[5];
 
         for (int i = 0; i < 5; i++) {
-            Callable r1 = new FileProcessor();
-            // Create the FutureTask with Callable
-            randomNumberTasks[i] = new FutureTask(r1);
 
-            // As it implements Runnable, create Thread
-            // with FutureTask
-            Thread t = new Thread(randomNumberTasks[i]);
-            t.start();
+            fileParserFutureTask[i] = (FutureTask) executorService.submit(new FileProcessor("Filename: "+ i));
+
         }
 
-        for (int i = 0; i < 5; i++) {
+        int numberOfFilesProcessed = 0;
+        while(numberOfFilesProcessed <5) {
             // As it implements Future, we can call get()
-            try {
-                System.out.println(randomNumberTasks[i].get());
-                Integer obj  = (Integer)randomNumberTasks[i].get();
-                if(obj == 0){
-                    System.out.println("Parsing failed");
+            for(int i=0;i<5;i++){
+                if(fileParserFutureTask[i].isDone()){
+                    numberOfFilesProcessed++;
 
+                    System.out.println( "Filename with status code : " + fileParserFutureTask[i].get());
                 }
-                if(obj == 1){
-                    System.out.println("Reading failed");
-
+                else
+                {
+                    System.out.println("Processing File");
                 }
-                if(obj == 2){
-                    System.out.println("Success");
-
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
             }
+
 
             // This method blocks till the result is obtained
             // The get method can throw checked exceptions
